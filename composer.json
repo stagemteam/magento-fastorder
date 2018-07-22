@@ -1,0 +1,22 @@
+{
+    "name": "stagem/magento-fastorder",
+    "type": "magento-module",
+    "license":"MIT Licence",
+    "description":"Fast Order Magento Module",
+    "authors":[{
+        "name":"Vlad Kozak",
+        "email":"vlad.gem.typ@gmail.com"
+    }],
+    "extra": {
+        "map": [
+            ["app/etc/modules/Web4pro_Fastorder.xml", "app/etc/modules/Web4pro_Fastorder.xml"],
+            ["app/code/community/Web4pro/Fastorder/", "app/code/community/Web4pro/Fastorder/"],
+            ["app/locale/ru_RU/template/email/fastorder/", "app/locale/ru_RU/template/email/fastorder/"],
+            ["app/design/frontend/base/default/layout/web4pro/fastorder.xml", "app/design/frontend/base/default/layout/web4pro/fastorder.xml"],
+            ["app/design/frontend/base/default/template/web4pro/fastorder/", "app/design/frontend/base/default/template/web4pro/fastorder/"],
+            ["app/design/adminhtml/default/default/template/web4pro/fastorder/", "app/design/adminhtml/default/default/template/web4pro/fastorder/"],
+            ["app/design/adminhtml/default/default/layout/web4pro/fastorder.xml", "app/design/adminhtml/default/default/layout/web4pro/fastorder.xml"],
+            ["skin/frontend/base/default/css/fastorder/", "skin/frontend/base/default/css/fastorder/"]
+        ]
+    }
+}
