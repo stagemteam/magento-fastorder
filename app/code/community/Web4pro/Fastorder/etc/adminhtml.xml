@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<config>
+    <menu>
+        <sales>
+            <children>
+                <fast_order translate="title" module="web4pro_fastorder">
+                    <title>Fast Order</title>
+                    <action>adminhtml/fastorder/index</action>
+                    <sort_order>11</sort_order>
+                </fast_order>
+            </children>
+        </sales>
+    </menu>
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <sales>
+                        <children>
+                            <fast_order translate="title">
+                                <title>Fast Order</title>
+                                <children>
+                                    <grid translate="title">
+                                        <title>Grid</title>
+                                    </grid>
+                                    <view translate="title">
+                                        <title>View</title>
+                                    </view>
+                                </children>
+                            </fast_order>
+                        </children>
+                    </sales>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <web4pro_fastorder translate="title" module="web4pro_fastorder">
+                                        <title>Fast Order Settings</title>
+                                    </web4pro_fastorder>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

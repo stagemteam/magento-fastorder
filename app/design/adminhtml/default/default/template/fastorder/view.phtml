@@ -1,0 +1,102 @@
+<?php
+/**
+ * WEB4PRO - Creating profitable online stores
+ *
+ *
+ * @author    WEB4PRO <amutylo@web4pro.com.ua>
+ * @category  WEB4PRO
+ * @package   Web4pro_Fastorder
+ * @copyright Copyright (c) 2014 WEB4PRO (http://www.web4pro.net)
+ * @license   http://www.web4pro.net/license.txt
+ *
+ *
+ */
+?>
+<?php
+$_order = $this->getOrder();
+$helper = $this->getHelper();
+$customer = $_order->getCustomer();
+$orderAdminDate = $this->formatDate($_order->getCreateDate(), 'medium', true);
+$orderStoreDate = $this->formatDate($_order->getCreatedAtStoreDate(), 'medium', true);
+?>
+<div class="box-left">
+    <!--Order Information-->
+    <div class="entry-edit">
+
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-account"><?php echo Mage::helper('sales')->__('Order # %s', $_order->getEntityId()) ?></h4>
+        </div>
+        <div class="fieldset">
+            <table cellspacing="0" class="form-list">
+                <?php if ($_order->getMagentoOrderId()):?>
+                    <tr>
+                        <td class="label"><label><?php echo $helper->__('View Magento Order') ?></label></td>
+                        <td class="value"><strong>
+                                <a href="<?php echo $this->getMagentoOrderUrl($_order->getMagentoOrderId()) ?>"><?php echo Mage::helper('sales')->__('Order # %s', $_order->getMagentoOrderId()) ?></a>
+                            </strong></td>
+                    </tr>
+                <?php endif;?>
+                <tr>
+                    <td class="label"><label><?php echo Mage::helper('sales')->__('Order Date') ?></label></td>
+                    <td class="value"><strong><?php echo $orderAdminDate ?></strong></td>
+                </tr>
+                <?php if ($orderAdminDate != $orderStoreDate):?>
+                    <tr>
+                        <td class="label"><label><?php echo Mage::helper('sales')->__('Order Date (%s)', $_order->getCreatedAtStoreDate()->getTimezone()) ?></label></td>
+                        <td class="value"><strong><?php echo $orderStoreDate ?></strong></td>
+                    </tr>
+                <?php endif;?>
+
+                <tr>
+                    <td class="label"><label><?php echo Mage::helper('sales')->__('Purchased From') ?></label></td>
+                    <td class="value"><strong><?php echo $this->getOrderStoreName() ?></strong></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="box-right">
+    <!--Account Information-->
+    <div class="entry-edit">
+        <div class="entry-edit-head">
+            <h4 class="icon-head head-account"><?php echo Mage::helper('sales')->__('Account Information') ?></h4>
+        </div>
+        <div class="fieldset">
+            <div class="hor-scroll">
+                <table cellspacing="0" class="form-list">
+                    <tr>
+                        <td class="label"><label><?php echo Mage::helper('sales')->__('Customer Name') ?></label></td>
+                        <td class="value">
+                            <?php if (!$customer->getIsGuest() && ($_customerUrl=$this->getUrl('*/customer/edit', array('id' => $customer->getId())))) : ?>
+                                <a href="<?php echo $_customerUrl ?>" target="_blank"><strong><?php echo $customer->getName() ?></strong></a>
+                            <?php else: ?>
+                                <strong><?php echo Mage::helper('customer')->__('Guest') ?></strong>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                    <?php if (!$customer->getIsGuest()):?>
+                        <tr>
+                            <td class="label"><label><?php echo Mage::helper('sales')->__('Email') ?></label></td>
+                            <td class="value"><a href="mailto:<?php echo $customer->getEmail() ?>"><strong><?php echo $customer->getEmail() ?></strong></a></td>
+                        </tr>
+                    <?php endif; ?>
+                    <tr>
+                        <td class="label"><label><?php echo $helper->__('Phone') ?></label></td>
+                        <td class="value"><strong><?php echo $_order->getFullPhoneNumber()?></strong></td>
+                    </tr>
+                    <tr>
+                        <td class="label"><label><?php echo $helper->__('Comment') ?></label></td>
+                        <td class="value"><strong><?php echo $this->escapeHtml($_order->getComment())?></strong></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="clear"></div>
+
+<div class="box-right entry-edit">
+    <div class="entry-edit-head"><h4><?php echo Mage::helper('sales')->__('Order Totals') ?></h4></div>
+    <div class="order-totals"><?php echo $this->getChildHtml('order_totals') ?></div>
+</div>
+<?php

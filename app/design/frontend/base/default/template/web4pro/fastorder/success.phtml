@@ -1,0 +1,37 @@
+<?php
+/**
+ * WEB4PRO - Creating profitable online stores
+ *
+ *
+ * @author    WEB4PRO <amutylo@web4pro.com.ua>
+ * @category  WEB4PRO
+ * @package   Web4pro_Fastorder
+ * @copyright Copyright (c) 2014 WEB4PRO (http://www.web4pro.net)
+ * @license   http://www.web4pro.net/license.txt
+ */
+?>
+<?php
+if ($this->isShowMagentoOrderSuccess()) :
+    echo $this->getChildHtml('magento_order_success');
+else :
+    ?>
+
+    <div class="page-title">
+        <h1><?php echo $this->__('Your fast order has been placed.') ?></h1>
+    </div>
+    <?php echo $this->getMessagesBlock()->getGroupedHtml() ?>
+    <h2 class="sub-title"><?php echo $this->__('Thank you to shop with us!') ?></h2>
+
+    <?php if ($this->getOrderId()) : ?>
+    <p><?php echo $this->__('Your order # is: %s. Manager will contact you soon to %s.', $this->getOrderId(), $this->getPhoneNumber()) ?></p>
+    <?php endif; ?>
+
+    
+
+    <div class="buttons-set">
+        <button type="button" class="button" title="<?php echo $this->__('Continue Shopping') ?>"
+                onclick="window.location.href = '<?php echo $this->getUrl() ?>'">
+            <span><span><?php echo $this->__('Continue Shopping') ?></span></span></button>
+    </div>
+
+<?php endif; ?>

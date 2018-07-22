@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<layout>
+    <adminhtml_fastorder_index>
+        <reference name="content">
+            <block type="web4pro_fastorder/adminhtml_orders" name="fastorder_orders_index"/>
+        </reference>
+    </adminhtml_fastorder_index>
+
+    <adminhtml_fastorder_view>
+        <reference name="content">
+            <block type="web4pro_fastorder/adminhtml_orders_view" name="sales_order_edit"/>
+        </reference>
+        <reference name="left">
+            <block type="web4pro_fastorder/adminhtml_orders_view_tabs" name="sales_order_tabs">
+                <block type="web4pro_fastorder/adminhtml_orders_view_tab_view" name="order_tab_info"
+                       template="web4pro/fastorder/view.phtml">
+                    <block type="web4pro_fastorder/adminhtml_orders_view_totals" name="order_totals"
+                           template="sales/order/totals.phtml"/>
+                </block>
+                <action method="addTab">
+                    <name>order_info</name>
+                    <block>order_tab_info</block>
+                </action>
+                <action method="addTab">
+                    <name>order_items</name>
+                    <block>web4pro_fastorder/adminhtml_orders_view_tab_cart</block>
+                </action>
+            </block>
+        </reference>
+    </adminhtml_fastorder_view>
+
+    <adminhtml_sales_order_view>
+        <reference name="left">
+            <block type="web4pro_fastorder/adminhtml_sales_order_view" name="fastorder_phone_number" template="web4pro/sales/order/phone.phtml" after="order_info"/>
+        </reference>
+    </adminhtml_sales_order_view>
+</layout>
