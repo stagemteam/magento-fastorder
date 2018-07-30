@@ -1,10 +1,15 @@
 <?xml version="1.0"?>
 <config>
-    
+    <tabs>
+        <w4pro translate="label" module="web4pro_fastorder">
+            <label>WEb4Pro</label>
+            <sort_order>206</sort_order>
+        </w4pro>
+    </tabs>
     <sections>
         <web4pro_fastorder translate="label" module="web4pro_fastorder">
             <label><![CDATA[Oneclick Order]]></label>
-           <tab>sm</tab>
+            <tab>w4pro</tab>
             <sort_order>300</sort_order>
             <show_in_default>1</show_in_default>
             <show_in_website>1</show_in_website>

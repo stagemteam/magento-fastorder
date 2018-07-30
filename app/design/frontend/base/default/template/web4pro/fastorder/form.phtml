@@ -20,7 +20,6 @@ $currentProduct = Mage::registry('current_product');
 if($currentProduct){
     $currProductId = $currentProduct->getId();
 }
-
 ?>
 
 <div id="fastorder-form-wrapper" class="<?php echo $this->getAction()->getFullActionName()?>">
@@ -28,7 +27,7 @@ if($currentProduct){
     <div class="descr" rel="description set from admin">
         <?php if($description) :?>
             <?php echo $description; ?>
-       
+
         <?php endif ;?>
     </div>
     <form id="fastorder-form" action="<?php echo $this->getUrl('fastorder/index/saveOrder')?>" method="post">
@@ -37,7 +36,7 @@ if($currentProduct){
                 <input type="hidden" name="product" id="product-id" class="fastorder-productid" value="<?php echo $currProductId;?>"/>
             <?php endif ;?>
             <?php  //echo $this->getPhoneCodeHtml('country', 'validate-select fastorder-country', true, $helper->__('Code'))?>
-                <input type="text" name="phone" class="required-entry fast-field fastorder-phone"  placeholder="<?php echo $this->__('phone number')?>"/>
+            <input type="text" name="phone" class="required-entry fast-field fastorder-phone"  placeholder="<?php echo $this->__('phone number')?>"/>
             <?php if(!$showEmailField): ?>
                 <input type="text" name="email" class="required-entry fast-field validate-email fastorder-email"  placeholder="<?php echo $this->__('email')?>"/>
             <?php endif; ?>
@@ -51,7 +50,7 @@ if($currentProduct){
         </div>
         <div class="button-wrapper" id="fastorder-buttons-container">
             <div class="comment-toggle" title="<?php echo $this->__('Add comment')?>">&nbsp;</div>
-            <button type="button" class="button <?php echo $action=='checkout_cart_index' ? 'btn-proceed-checkout btn-checkout' : ''?>" name="submitFastOrder" onclick="fastOrder.saveOrder()"/>
+            <button type="button" class="button <?php echo $action=='checkout_cart_index' ? 'btn-proceed-checkout btn-checkout' : ''?>" name="submitFastOrder" onclick="fastOrder.saveOrder();"/>
             <span><span><?php echo $this->__('купить в 1 клик')?></span></span>
             </button>
         </div>
