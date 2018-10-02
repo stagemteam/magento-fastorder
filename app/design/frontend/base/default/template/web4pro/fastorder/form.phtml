@@ -36,7 +36,7 @@ if($currentProduct){
                 <input type="hidden" name="product" id="product-id" class="fastorder-productid" value="<?php echo $currProductId;?>"/>
             <?php endif ;?>
             <?php  //echo $this->getPhoneCodeHtml('country', 'validate-select fastorder-country', true, $helper->__('Code'))?>
-            <input type="tel" id="telephone" name="phone" class="required-entry fast-field fastorder-phone" title="Телефон" placeholder="<?php echo $this->__('+380 (__) ___-__-__')?>"/>
+            <input type="tel" id="telephone" name="phone" class="required-entry fast-field fastorder-phone" `title="Телефон" placeholder="<?php echo $this->__('+38 (0__) ___-__-__')?>"/>
             <?php if(!$showEmailField): ?>
                 <input type="text" name="email" class="required-entry fast-field validate-email fastorder-email"  placeholder="<?php echo $this->__('email')?>"/>
             <?php endif; ?>
