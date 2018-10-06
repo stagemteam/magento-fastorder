@@ -58,7 +58,7 @@ if($currentProduct){
             <img src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" alt="<?php echo $helper->__('Submit Order...') ?>" title="<?php echo $helper->__('Submit Order...') ?>" class="v-middle" /> <?php echo $helper->__('Submit Order...') ?>
         </span>
 	    <div class="invalid-message">
-		    <span>Некоректный номер</span>
+		    <span><?= $this->__('Invalid phone'); ?></span>
 	    </div>
     </form>
 
