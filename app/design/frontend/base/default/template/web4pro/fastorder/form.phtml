@@ -57,6 +57,9 @@ if($currentProduct){
         <span class="please-wait" id="fastorder-please-wait" style="display:none;">
             <img src="<?php echo $this->getSkinUrl('images/opc-ajax-loader.gif') ?>" alt="<?php echo $helper->__('Submit Order...') ?>" title="<?php echo $helper->__('Submit Order...') ?>" class="v-middle" /> <?php echo $helper->__('Submit Order...') ?>
         </span>
+	    <div class="invalid-message">
+		    <span>Некоректный номер</span>
+	    </div>
     </form>
 
 </div>
@@ -97,206 +100,216 @@ if($currentProduct){
             }
         },
         saveOrder:function () {
-            if (this.formInstance.validator && this.formInstance.validator.validate()) {
-                var productParams ='';
-                if($('product-id')){
-                    var product = $('product-id').value;
-                    var form = $('product_addtocart_form');
-                    var qty, onlyCurrent, comment;
-                    if($('qty')){
-                        qty = $('qty').value;
-                    }
+          if (this.formInstance.validator && this.formInstance.validator.validate()) {
+            var phoneInteger = jQuery('#telephone').val().replace(/[^0-9]/g,"").length;
+            if (phoneInteger == 12) {
+              jQuery('.invalid-message').css({'display': 'none'});
 
-                    if($$('#fastorder-comment-wrapper textarea').value != ''){
-                        comment = $$('#fastorder-comment-wrapper textarea').value;
-                    } else {
-                        comment = "fast order";
-                    }
-                    var form_key = form[0].value;
-                    var productAjax = {
-                        form_key: form_key
-
-                    };
-                    if(qty && qty > 0){
-                        productAjax.qty = qty;
-                    }
-                    var options = {};
-                    var super_attributes = {};
-                    var superparams = {};
-                    var prodOptions = $$('#product-options-wrapper .super-attribute-select');
-                    var virtProdOptions = $$('#product-options-wrapper .super-attribute-select');
-                    var customOptions = $$('#product-options-wrapper .product-custom-option');
-                    var supergroup = $$('#super-product-table input');
-
-                    var bundleOptions = $$('#product-options-wrapper select, #product-options-wrapper input, #product-options-wrapper textarea');
-                    var bundleparams = [];
-                    //process bundle options
-                    if(bundleOptions){
-                        var bund = {};
-                        for (var i = 0; i < bundleOptions.length; i++){
-                            var bundleName = bundleOptions[i].readAttribute('name');
-                            var bundleTag  = bundleOptions[i].tagName;
-                            var bundleType = bundleOptions[i].readAttribute('type');
-                            var bundleValue = '';
-                            if('INPUT' == bundleTag || 'TEXTAREA' == bundleTag){
-                                //type is input
-                                if('radio' == bundleType && bundleOptions[i].checked){
-                                    //input radio checked
-                                    bundleValue = bundleOptions[i].value;
-                                } else if ('checkbox' == bundleType && bundleOptions[i].checked){
-                                    bundleValue = bundleOptions[i].value;
-                                }
-                                if('text' == bundleType || 'hidden' == bundleType) {
-                                    //normal input
-                                    bundleValue = bundleOptions[i].value;
-                                }
-                            } else if ('SELECT' == bundleTag) {
-
-                                for ( var j=0; j < bundleOptions[i].length; j++ ) {
-                                    if(bundleOptions[i][j].selected == true){
-                                        if(bundleValue && !bundleValue.empty()){
-                                            bundleValue = bundleValue + "," + bundleOptions[i][j].value;
-                                        } else{
-                                            bundleValue = bundleOptions[i][j].value;
-                                        }
-
-                                    }
-                                }
-
-                            } else {
-                                continue;
-                            }
-
-                            if(!bundleName.empty() && !bundleValue.empty() ){
-                                bund[bundleName] = bundleValue;
-                                bundleparams.push(bund);
-                            }
-                            bund = {};
-                        }
-                    }
-
-                    //process product superoptions
-                    var optName, optValue;
-                    if(prodOptions){
-                        for ( var i=0; i < prodOptions.length; i++ ) {
-                            optValue = '';
-                            optName    = prodOptions[i].readAttribute('name');
-                            for ( var j=0; j < prodOptions[i].length; j++ ) {
-                                optValue = '';
-                                if(prodOptions[i][j].selected == true){
-                                    optValue = prodOptions[i][j].value;
-                                }
-                            }
-                            if(!optName.empty() && !optValue.empty()){
-                                superparams[optName] = optValue;
-                            }
-                        }
-                    }
-
-
-                    //process custom options
-                    var custName = '';
-                    var custType = '';
-                    var custValue ='';
-                    var custparams = {};
-                    if(customOptions){
-                        for ( var i=0; i < customOptions.length; i++ ) {
-                            custName    = customOptions[i].readAttribute('name');
-                            custType  = customOptions[i].tagName;
-                            custValue ='';
-                            if('INPUT' == custType || 'TEXTAREA' == custType){
-                                //type is input
-                                custValue = customOptions[i].value;
-                            }
-
-                            if('SELECT' == custType){
-                                //type is select
-                                for ( var j=0; j < customOptions[i].length; j++ ) {
-                                    custValue ='';
-                                    if(customOptions[i][j].selected == true){
-                                        custValue = customOptions[i][j].value;
-                                    }
-                                }
-                            }
-                            if(!custName.empty() && !custValue.empty()){
-                                custparams[custName] = custValue;
-                            }
-                        }
-                    }
-
-                    //process product supergroups
-                    var supergroupOptions = {};
-                    for ( var i = 0; i < supergroup.length; i++ ){
-                        superName = supergroup[i].readAttribute('name');
-                        var tag
-                        var index = superName.indexOf('super_group');
-                        if(index != -1){
-                            superValue = supergroup[i].value;
-                            supergroupOptions[superName] = superValue;
-                        }
-                    }
-
-
-
-                    var productAjaxStr = Object.toQueryString(productAjax);
-                    var allData = '';
-                    allData = allData + productAjaxStr;
-
-                    var bundleparamsStr = '';
-                    var bundStr = '';
-                    var bundleObj = {};
-                    if(bundleparams){
-                        for(var i=0, si = bundleparams.length; i < si; i++){
-                           var obj = bundleparams[i];
-                            var curObj = {};
-                            for (var prop in obj) {
-                                curObj[prop] = obj[prop];
-                                curObjStr = Object.toQueryString(curObj);
-                                allData = allData + '&' + curObjStr;
-                            }
-
-                        }
-                    }
-
-                    var supergroupparamsStr = '';
-                    if(supergroupOptions){
-                        supergroupparamsStr = Object.toQueryString(supergroupOptions);
-                        allData = allData + '&' + supergroupparamsStr;
-                    }
-
-                    var superParamsSrt = '';
-                    if(superparams){
-                        superParamsSrt = Object.toQueryString(superparams);
-                        allData = allData + '&' + superParamsSrt;
-                    }
-                    var custParamsSrt = '';
-                    if(custparams){
-                        custParamsSrt = Object.toQueryString(custparams);
-                        allData = allData + '&' + custParamsSrt;
-                    }
+              var productParams = '';
+              if ($('product-id')) {
+                var product = $('product-id').value;
+                var form = $('product_addtocart_form');
+                var qty, onlyCurrent, comment;
+                if ($('qty')) {
+                  qty = $('qty').value;
                 }
 
-                Element.show('fastorder-please-wait');
-                Element.hide('fastorder-buttons-container');
-                $('fastorder-buttons-container').descendants().each(function(s) {
-                    s.disabled = true;
-                });
-                var formString = this.formInstance.form.serialize();
-                if('' != allData){
-                    params = formString+'&'+allData;
+                if ($$('#fastorder-comment-wrapper textarea').value != '') {
+                  comment = $$('#fastorder-comment-wrapper textarea').value;
                 } else {
-                    params = formString;
+                  comment = "fast order";
+                }
+                var form_key = form[0].value;
+                var productAjax = {
+                  form_key: form_key
+
+                };
+                if (qty && qty > 0) {
+                  productAjax.qty = qty;
+                }
+                var options = {};
+                var super_attributes = {};
+                var superparams = {};
+                var prodOptions = $$('#product-options-wrapper .super-attribute-select');
+                var virtProdOptions = $$('#product-options-wrapper .super-attribute-select');
+                var customOptions = $$('#product-options-wrapper .product-custom-option');
+                var supergroup = $$('#super-product-table input');
+
+                var bundleOptions = $$('#product-options-wrapper select, #product-options-wrapper input, #product-options-wrapper textarea');
+                var bundleparams = [];
+                //process bundle options
+                if (bundleOptions) {
+                  var bund = {};
+                  for (var i = 0; i < bundleOptions.length; i++) {
+                    var bundleName = bundleOptions[i].readAttribute('name');
+                    var bundleTag = bundleOptions[i].tagName;
+                    var bundleType = bundleOptions[i].readAttribute('type');
+                    var bundleValue = '';
+                    if ('INPUT' == bundleTag || 'TEXTAREA' == bundleTag) {
+                      //type is input
+                      if ('radio' == bundleType && bundleOptions[i].checked) {
+                        //input radio checked
+                        bundleValue = bundleOptions[i].value;
+                      } else if ('checkbox' == bundleType && bundleOptions[i].checked) {
+                        bundleValue = bundleOptions[i].value;
+                      }
+                      if ('text' == bundleType || 'hidden' == bundleType) {
+                        //normal input
+                        bundleValue = bundleOptions[i].value;
+                      }
+                    } else if ('SELECT' == bundleTag) {
+
+                      for (var j = 0; j < bundleOptions[i].length; j++) {
+                        if (bundleOptions[i][j].selected == true) {
+                          if (bundleValue && !bundleValue.empty()) {
+                            bundleValue = bundleValue + "," + bundleOptions[i][j].value;
+                          } else {
+                            bundleValue = bundleOptions[i][j].value;
+                          }
+
+                        }
+                      }
+
+                    } else {
+                      continue;
+                    }
+
+                    if (!bundleName.empty() && !bundleValue.empty()) {
+                      bund[bundleName] = bundleValue;
+                      bundleparams.push(bund);
+                    }
+                    bund = {};
+                  }
                 }
 
-                new Ajax.Request(this.formInstance.form.getAttribute('action'), {
-                    method:'post',
-                    parameters:params,
-                    onComplete:this._afterSaveOrder.bind(this),
-                    onFailure:function () {
-                        location.href = BASE_URL;
+                //process product superoptions
+                var optName, optValue;
+                if (prodOptions) {
+                  for (var i = 0; i < prodOptions.length; i++) {
+                    optValue = '';
+                    optName = prodOptions[i].readAttribute('name');
+                    for (var j = 0; j < prodOptions[i].length; j++) {
+                      optValue = '';
+                      if (prodOptions[i][j].selected == true) {
+                        optValue = prodOptions[i][j].value;
+                      }
                     }
-                });
+                    if (!optName.empty() && !optValue.empty()) {
+                      superparams[optName] = optValue;
+                    }
+                  }
+                }
+
+
+                //process custom options
+                var custName = '';
+                var custType = '';
+                var custValue = '';
+                var custparams = {};
+                if (customOptions) {
+                  for (var i = 0; i < customOptions.length; i++) {
+                    custName = customOptions[i].readAttribute('name');
+                    custType = customOptions[i].tagName;
+                    custValue = '';
+                    if ('INPUT' == custType || 'TEXTAREA' == custType) {
+                      //type is input
+                      custValue = customOptions[i].value;
+                    }
+
+                    if ('SELECT' == custType) {
+                      //type is select
+                      for (var j = 0; j < customOptions[i].length; j++) {
+                        custValue = '';
+                        if (customOptions[i][j].selected == true) {
+                          custValue = customOptions[i][j].value;
+                        }
+                      }
+                    }
+                    if (!custName.empty() && !custValue.empty()) {
+                      custparams[custName] = custValue;
+                    }
+                  }
+                }
+
+                //process product supergroups
+                var supergroupOptions = {};
+                for (var i = 0; i < supergroup.length; i++) {
+                  superName = supergroup[i].readAttribute('name');
+                  var tag
+                  var index = superName.indexOf('super_group');
+                  if (index != -1) {
+                    superValue = supergroup[i].value;
+                    supergroupOptions[superName] = superValue;
+                  }
+                }
+
+
+                var productAjaxStr = Object.toQueryString(productAjax);
+                var allData = '';
+                allData = allData + productAjaxStr;
+
+                var bundleparamsStr = '';
+                var bundStr = '';
+                var bundleObj = {};
+                if (bundleparams) {
+                  for (var i = 0, si = bundleparams.length; i < si; i++) {
+                    var obj = bundleparams[i];
+                    var curObj = {};
+                    for (var prop in obj) {
+                      curObj[prop] = obj[prop];
+                      curObjStr = Object.toQueryString(curObj);
+                      allData = allData + '&' + curObjStr;
+                    }
+
+                  }
+                }
+
+                var supergroupparamsStr = '';
+                if (supergroupOptions) {
+                  supergroupparamsStr = Object.toQueryString(supergroupOptions);
+                  allData = allData + '&' + supergroupparamsStr;
+                }
+
+                var superParamsSrt = '';
+                if (superparams) {
+                  superParamsSrt = Object.toQueryString(superparams);
+                  allData = allData + '&' + superParamsSrt;
+                }
+                var custParamsSrt = '';
+                if (custparams) {
+                  custParamsSrt = Object.toQueryString(custparams);
+                  allData = allData + '&' + custParamsSrt;
+                }
+              }
+
+              Element.show('fastorder-please-wait');
+              Element.hide('fastorder-buttons-container');
+              $('fastorder-buttons-container').descendants().each(function (s) {
+                s.disabled = true;
+              });
+              var formString = this.formInstance.form.serialize();
+              if ('' != allData) {
+                params = formString + '&' + allData;
+              } else {
+                params = formString;
+              }
+
+              new Ajax.Request(this.formInstance.form.getAttribute('action'), {
+                method: 'post',
+                parameters: params,
+                onComplete: this._afterSaveOrder.bind(this),
+                onFailure: function () {
+                  location.href = BASE_URL;
+                }
+              });
+            } else {
+				jQuery('.invalid-message').css({'display': 'block'})
             }
+          } else {
+            jQuery('.invalid-message').css({
+              'display': 'block'
+            })
+          }
         },
         toggleCommentBlock:function (event) {
             Element.toggle('fastorder-comment-wrapper');
